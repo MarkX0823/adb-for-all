@@ -5,6 +5,7 @@ import sys
 # Parse commands
 commands = sys.argv
 command = ''
+base = 'List of devices attached'
 
 if len(commands) >= 2:
 	commands = commands[1:]
@@ -13,12 +14,20 @@ if len(commands) >= 2:
 
 
 # Parse device name
-devices = os.popen('adb devices').read().splitlines()
+devices = os.popen('adb devices').read()
+if '* daemon started successfully *' in devices:
+	base = '* daemon started successfully *'
+devices = devices.splitlines()
 
-for line in devices:
-	if 'List of devices attached' in line:
+i = 0
+while i < len(devices):
+	line = devices[i]
+
+	if base in line:
 		devices.remove(line)
 		break
+
+	devices.remove(line)
 
 for device_name in devices:
 	if not device_name:
